@@ -10,6 +10,9 @@ withFile p cb = do
 parseLine : String -> List Int
 parseLine = map cast . words
 
+addLists : Num a => List a -> List a -> List a
+addLists = zipWith (+)
+
 main : IO ()
 main = do
     Right (xs, ys) <- the (IO (Either FileError (List Int, List Int))) $ withFile "data.txt" $ \f => do
@@ -19,3 +22,5 @@ main = do
     | Left e => putStrLn ("FAILED: " ++ show e)
 
     putStrLn ("RESULT: xs=" ++ show xs ++ " ys=" ++ show ys)
+    let result = addLists xs ys
+    putStrLn ("sum=" ++ show result)
