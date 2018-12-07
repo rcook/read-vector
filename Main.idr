@@ -12,9 +12,6 @@ withFile p cb = do
 parseLine : String -> List Int
 parseLine = map cast . words
 
-addLists : Num a => List a -> List a -> List a
-addLists = zipWith (+)
-
 toVect : List a -> (n ** Vect n a)
 toVect [] = (_ ** [])
 toVect (x :: xs) =
@@ -32,18 +29,9 @@ main = do
         pure (Right (parseLine xLine, parseLine yLine))
     | Left e => putStrLn ("FAILED: " ++ show e)
 
-    putStrLn ("RESULT: xs=" ++ show xs ++ " ys=" ++ show ys)
-    let result = addLists xs ys
-    putStrLn ("sum=" ++ show result)
+    let (xsLength ** xsVect) = toVect xs
+    let (ysLength ** ysVect) = toVect ys
 
-    let xsVect = toVect xs
-    printLn xsVect
-
-    let ysVect = toVect ys
-    printLn ysVect
-
-    -- TBD: Verify that length(xsVect) == length(ysVect)
-    -- Convert to fixed-length vectors
-    -- TBD: Compute sum using vector operations
-    --let result = addVects xsVect ysVect
-    --putStrLn "sum=???"
+    case exactLength xsLength ysVect of
+        Nothing => putStrLn "Vector lengths do not match"
+        Just ysVect' => printLn (zipWith (+) xsVect ysVect')
