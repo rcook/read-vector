@@ -2,9 +2,6 @@ module Main
 
 import Data.Vect
 
-data VectUnknown : Type -> Type where
-    MkVect : (len : Nat) -> Vect len a -> VectUnknown a
-
 withFile : String -> (File -> IO (Either FileError a)) -> IO (Either FileError a)
 withFile p cb = do
     Right f <- openFile p Read | Left e => pure (Left e)
@@ -18,12 +15,11 @@ parseLine = map cast . words
 addLists : Num a => List a -> List a -> List a
 addLists = zipWith (+)
 
--- Inspired by readVect from Edwin Brady's book
-toVect : List a -> VectUnknown a
-toVect [] = MkVect _ []
+toVect : List a -> (n ** Vect n a)
+toVect [] = (_ ** [])
 toVect (x :: xs) =
-    let MkVect _ xsVect = toVect xs
-    in MkVect _ (x :: xsVect)
+    let (_ ** xsVect) = toVect xs
+    in (_ ** x :: xsVect)
 
 addVects : Num a => Vect n a -> Vect n a -> Vect n a
 addVects = zipWith (+)
@@ -40,10 +36,14 @@ main = do
     let result = addLists xs ys
     putStrLn ("sum=" ++ show result)
 
+    let xsVect = toVect xs
+    printLn xsVect
+
+    let ysVect = toVect ys
+    printLn ysVect
+
     -- TBD: Verify that length(xsVect) == length(ysVect)
     -- Convert to fixed-length vectors
-    --let xsVect = toVect xs
-    --let ysVect = toVect ys
     -- TBD: Compute sum using vector operations
     --let result = addVects xsVect ysVect
     --putStrLn "sum=???"
