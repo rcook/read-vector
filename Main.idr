@@ -18,9 +18,6 @@ toVect (x :: xs) =
     let (_ ** xsVect) = toVect xs
     in (_ ** x :: xsVect)
 
-addVects : Num a => Vect n a -> Vect n a -> Vect n a
-addVects = zipWith (+)
-
 main : IO ()
 main = do
     Right (xs, ys) <- the (IO (Either FileError (List Int, List Int))) $ withFile "data.txt" $ \f => do
