@@ -20,7 +20,7 @@ toVect (x :: xs) =
 
 main : IO ()
 main = do
-    Right (xs, ys) <- the (IO (Either FileError (List Int, List Int))) $ withFile "data.txt" $ \f => do
+    Right (xs, ys) <- the (_ (Either _ (List Int, List Int))) $ withFile "data.txt" $ \f => do
         Right xLine <- fGetLine f | Left e => pure (Left e)
         Right yLine <- fGetLine f | Left e => pure (Left e)
         pure (Right (parseLine xLine, parseLine yLine))
